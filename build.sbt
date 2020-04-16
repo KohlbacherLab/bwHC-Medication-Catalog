@@ -6,9 +6,17 @@
 
 name := "bwhc-medication-catalog"
 organization in ThisBuild := "de.bwhc"
-//scalaVersion in ThisBuild := "2.13.0"
-scalaVersion in ThisBuild := "2.12.8"
-version in ThisBuild:= "1.0"
+version in ThisBuild:= "1.0-SNAPSHOT"
+
+lazy val scala212 = "2.12.10"
+lazy val scala213 = "2.13.1"
+lazy val supportedScalaVersions =
+  List(
+    scala212,
+    scala213
+  )
+
+scalaVersion in ThisBuild := scala213
 
 
 //-----------------------------------------------------------------------------
@@ -17,27 +25,30 @@ version in ThisBuild:= "1.0"
 
 lazy val global = project
   .in(file("."))
-  .settings(settings)
+  .settings(
+    settings,
+    crossScalaVersions := Nil
+  )
   .aggregate(
-     medication_catalog_api,
-     medication_catalog_impl,
-     tests
+    api,
+    impl,
+    tests
   )
 
-
-
-lazy val medication_catalog_api = project
+lazy val api = project
   .settings(
     name := "medication-catalog-api",
-    settings
+    settings,
+    crossScalaVersions := supportedScalaVersions
   )
 
-lazy val medication_catalog_impl = project
+lazy val impl = project
   .settings(
     name := "medication-catalog-impl",
-    settings
+    settings,
+    crossScalaVersions := supportedScalaVersions
   )
-  .dependsOn(medication_catalog_api)
+  .dependsOn(api)
 
 lazy val tests = project
   .settings(
@@ -45,11 +56,12 @@ lazy val tests = project
     settings,
     libraryDependencies ++= Seq(
       dependencies.scalatest % "test"
-    )
+    ),
+    crossScalaVersions := supportedScalaVersions
   )
   .dependsOn(
-    medication_catalog_api,
-    medication_catalog_impl % "test"
+    api,
+    impl % "test"
   )
 
 
@@ -81,14 +93,14 @@ lazy val settings = commonSettings
 
 lazy val compilerOptions = Seq(
   "-unchecked",
-//  "-feature",
+  "-feature",
+  "-Xfatal-warnings",
 //  "-language:existentials",
 //  "-language:higherKinds",
 //  "-language:implicitConversions",
 //  "-language:postfixOps",
   "-deprecation",
-  "-encoding",
-  "utf8"
+  "-encoding", "utf8"
 )
 
 lazy val commonSettings = Seq(

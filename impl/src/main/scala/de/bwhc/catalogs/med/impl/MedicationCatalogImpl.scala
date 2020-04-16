@@ -29,7 +29,7 @@ object MedicationCatalogImpl extends MedicationCatalog
     .drop(1)  // Skip CSV file header
     .map(_.split(";"))
     .map(cn => Medication(Medication.Code(cn(0)),cn(1))) 
-    .toIterable
+    .toList
 
 
   def entries: Future[Iterable[Medication]] =
