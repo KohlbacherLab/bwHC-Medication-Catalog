@@ -4,7 +4,7 @@ package de.bwhc.catalogs.med.impl
 
 import scala.io.Source
 
-import scala.concurrent.Future
+import scala.concurrent.{ExecutionContext,Future}
 
 import de.bwhc.catalogs.med._
 
@@ -28,20 +28,30 @@ object MedicationCatalogImpl extends MedicationCatalog
     .getLines
     .drop(1)  // Skip CSV file header
     .map(_.split(";"))
-    .map(cn => Medication(Medication.Code(cn(0)),cn(1))) 
+    .map(cn => Medication(Medication.Code(cn(0)),Some(cn(1)))) 
     .toList
 
 
-  def entries: Future[Iterable[Medication]] =
+  def entries(
+    implicit ec: ExecutionContext
+  ): Future[Iterable[Medication]] =
     Future.successful(meds)
 
 
-  def findByCode(code: Medication.Code): Future[Option[Medication]] =
+  def findByCode(
+    code: Medication.Code
+  )(
+    implicit ec: ExecutionContext
+  ): Future[Option[Medication]] =
     Future.successful(meds.find(_.code == code))
 
 
-  def findMatching(pattern: String): Future[Iterable[Medication]] =
-    Future.successful(meds.filter(_.name.contains(pattern)))
+  def findMatching(
+    pattern: String
+  )(
+    implicit ec: ExecutionContext
+  ): Future[Iterable[Medication]] =
+    Future.successful(meds.filter(_.name.exists(_.contains(pattern))))
 
 
 }

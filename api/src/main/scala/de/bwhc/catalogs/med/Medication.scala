@@ -10,5 +10,5 @@ object Medication
 case class Medication
 (
   code: Medication.Code,
-  name: String
+  name: Option[String]
 )
