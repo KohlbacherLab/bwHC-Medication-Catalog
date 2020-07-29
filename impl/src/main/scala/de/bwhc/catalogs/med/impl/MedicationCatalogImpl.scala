@@ -4,7 +4,10 @@ package de.bwhc.catalogs.med.impl
 
 import scala.io.Source
 
-import scala.concurrent.{ExecutionContext,Future}
+//import scala.concurrent.{
+//  ExecutionContext,
+//  Future
+//}
 
 import de.bwhc.catalogs.med._
 
@@ -32,6 +35,21 @@ object MedicationCatalogImpl extends MedicationCatalog
     .toList
 
 
+  def entries = meds
+
+
+  def findByCode(
+    code: Medication.Code
+  ): Option[Medication] =
+    meds.find(_.code == code)
+
+
+  def findMatching(
+    pattern: String
+  ): Iterable[Medication] =
+    meds.filter(_.name.exists(_.contains(pattern)))
+
+/*
   def entries(
     implicit ec: ExecutionContext
   ): Future[Iterable[Medication]] =
@@ -52,6 +70,6 @@ object MedicationCatalogImpl extends MedicationCatalog
     implicit ec: ExecutionContext
   ): Future[Iterable[Medication]] =
     Future.successful(meds.filter(_.name.exists(_.contains(pattern))))
-
+*/
 
 }

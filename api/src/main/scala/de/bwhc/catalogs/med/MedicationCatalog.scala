@@ -5,7 +5,7 @@ package de.bwhc.catalogs.med
 import java.util.ServiceLoader
 
 import scala.util.Try
-import scala.concurrent.{ExecutionContext,Future}
+//import scala.concurrent.{ExecutionContext,Future}
 
 
 trait MedicationCatalogProvider
@@ -17,6 +17,18 @@ trait MedicationCatalogProvider
 trait MedicationCatalog
 {
 
+  def entries: Iterable[Medication]
+
+  def findByCode(
+    code: Medication.Code
+  ): Option[Medication]
+  
+  def findMatching(
+    pattern: String
+  ): Iterable[Medication]
+
+
+/*
   def entries(
     implicit ec: ExecutionContext
   ): Future[Iterable[Medication]]
@@ -32,7 +44,7 @@ trait MedicationCatalog
   )(
     implicit ec: ExecutionContext
   ): Future[Iterable[Medication]]
-
+*/
 }
 
 

@@ -56,7 +56,7 @@ lazy val tests = project
     name := "tests",
     settings,
     libraryDependencies ++= Seq(
-      dependencies.scalatest % "test"
+      dependencies.scalatest
     ),
     crossScalaVersions := supportedScalaVersions,
     publish / skip := true
@@ -74,16 +74,10 @@ lazy val tests = project
 
 lazy val dependencies =
   new {
-    val scalatest  = "org.scalatest"     %% "scalatest"        % "3.0.8"
+    val scalatest  = "org.scalatest"     %% "scalatest"        % "3.0.8" % "test"
     val slf4j      = "org.slf4j"         %  "slf4j-api"        % "1.7.26"
-    val logback    = "ch.qos.logback"    %  "logback-classic"  % "1.0.13"
-//    val play_json  = "com.typesafe.play" %% "play-json"        % "2.7.0"
+    val play_json  = "com.typesafe.play" %% "play-json"        % "2.8.0"
   }
-
-lazy val commonDependencies = Seq(
-  dependencies.slf4j,
-  dependencies.scalatest % "test",
-)
 
 
 //-----------------------------------------------------------------------------
@@ -97,10 +91,6 @@ lazy val compilerOptions = Seq(
   "-unchecked",
   "-feature",
   "-Xfatal-warnings",
-//  "-language:existentials",
-//  "-language:higherKinds",
-//  "-language:implicitConversions",
-//  "-language:postfixOps",
   "-deprecation",
   "-encoding", "utf8"
 )

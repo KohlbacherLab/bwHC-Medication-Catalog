@@ -24,8 +24,10 @@ class Tests extends AsyncFlatSpec
 
   "MedicationCatalog" should "return matches for 'umab'" in {
 
-    Data.drugs.get.findMatching("umab")
-      .map(ms => assert(!ms.isEmpty))
+    assert(!Data.drugs.get.findMatching("umab").isEmpty)
+
+//    Data.drugs.get.findMatching("umab")
+//      .map(ms => assert(!ms.isEmpty))
   }
 
 

@@ -4,10 +4,11 @@ package de.bwhc.catalogs.med
 
 object Medication
 {
-  case class Code(value: String)
+  case class Code(value: String) extends AnyVal
 }
 
-case class Medication
+
+final case class Medication
 (
   code: Medication.Code,
   name: Option[String]
