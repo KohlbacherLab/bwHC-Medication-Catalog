@@ -2,10 +2,8 @@ package de.bwhc.catalogs.med
 
 
 
-object Medication
-{
-  case class Code(value: String) extends AnyVal
-}
+import play.api.libs.json.Json
+
 
 
 final case class Medication
@@ -13,3 +11,15 @@ final case class Medication
   code: Medication.Code,
   name: Option[String]
 )
+
+
+object Medication
+{
+
+  case class Code(value: String) extends AnyVal
+
+  implicit val formatCode = Json.valueFormat[Code]
+
+  implicit val format     = Json.format[Medication]
+
+}

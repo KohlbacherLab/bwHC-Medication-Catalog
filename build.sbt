@@ -40,6 +40,9 @@ lazy val api = project
   .settings(
     name := "medication-catalog-api",
     settings,
+    libraryDependencies ++= Seq(
+      dependencies.play_json
+    ),
     crossScalaVersions := supportedScalaVersions
   )
 
