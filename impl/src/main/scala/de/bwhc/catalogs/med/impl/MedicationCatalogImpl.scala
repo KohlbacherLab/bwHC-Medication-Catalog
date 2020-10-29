@@ -9,7 +9,9 @@ import de.bwhc.catalogs.med._
 
 class MedicationCatalogProviderImpl extends MedicationCatalogProvider
 {
-  def getInstance: MedicationCatalog = MedicationCatalogImpl
+  def getInstance: MedicationCatalog = {
+    MedicationCatalogImpl
+  }
 }
 
 
@@ -17,19 +19,19 @@ class MedicationCatalogProviderImpl extends MedicationCatalogProvider
 object MedicationCatalogImpl extends MedicationCatalog
 {
 
-  private lazy val meds: Iterable[Medication] =
+  private val meds: Iterable[Medication] =
+    this.synchronized {
     Source.fromInputStream(
       this.getClass
         .getClassLoader
         .getResourceAsStream("ATC_GKV_2020.csv")
-//        .getResourceAsStream("civicdb.coded.drugs.csv")
     )
     .getLines
     .drop(1)  // Skip CSV file header
     .map(_.split(";"))
     .map(cn => Medication(Medication.Code(cn(0)),Some(cn(1)))) 
     .toList
-
+  }
 
   def entries = meds
 
