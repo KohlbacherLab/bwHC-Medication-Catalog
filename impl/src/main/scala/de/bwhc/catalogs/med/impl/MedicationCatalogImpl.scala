@@ -4,11 +4,6 @@ package de.bwhc.catalogs.med.impl
 
 import scala.io.Source
 
-//import scala.concurrent.{
-//  ExecutionContext,
-//  Future
-//}
-
 import de.bwhc.catalogs.med._
 
 
@@ -26,7 +21,8 @@ object MedicationCatalogImpl extends MedicationCatalog
     Source.fromInputStream(
       this.getClass
         .getClassLoader
-        .getResourceAsStream("civicdb.coded.drugs.csv")
+        .getResourceAsStream("ATC_GKV_2020.csv")
+//        .getResourceAsStream("civicdb.coded.drugs.csv")
     )
     .getLines
     .drop(1)  // Skip CSV file header
