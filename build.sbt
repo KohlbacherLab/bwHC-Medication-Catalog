@@ -77,9 +77,9 @@ lazy val tests = project
 
 lazy val dependencies =
   new {
-    val scalatest  = "org.scalatest"     %% "scalatest"        % "3.0.8" % "test"
+    val scalatest  = "org.scalatest"     %% "scalatest"        % "3.0.8" % Test
     val slf4j      = "org.slf4j"         %  "slf4j-api"        % "1.7.26"
-    val play_json  = "com.typesafe.play" %% "play-json"        % "2.8.0"
+    val play_json  = "com.typesafe.play" %% "play-json"        % "2.8.1"
   }
 
 
