@@ -8,11 +8,11 @@ name := "bwhc-medication-catalog"
 organization in ThisBuild := "de.bwhc"
 version in ThisBuild:= "1.0-SNAPSHOT"
 
-lazy val scala212 = "2.12.10"
+//lazy val scala212 = "2.12.10"
 lazy val scala213 = "2.13.1"
 lazy val supportedScalaVersions =
   List(
-    scala212,
+//    scala212,
     scala213
   )
 
@@ -78,7 +78,6 @@ lazy val tests = project
 lazy val dependencies =
   new {
     val scalatest  = "org.scalatest"     %% "scalatest"        % "3.0.8" % Test
-    val slf4j      = "org.slf4j"         %  "slf4j-api"        % "1.7.26"
     val play_json  = "com.typesafe.play" %% "play-json"        % "2.8.1"
   }
 

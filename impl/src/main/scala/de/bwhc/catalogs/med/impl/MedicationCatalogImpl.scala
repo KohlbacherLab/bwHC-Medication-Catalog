@@ -9,6 +9,8 @@ import scala.util.matching.Regex
 
 import de.bwhc.catalogs.med._
 
+import scala.util.chaining._
+
 
 class MedicationCatalogProviderImpl extends MedicationCatalogProvider
 {
@@ -33,8 +35,6 @@ object MedicationCatalogImpl extends MedicationCatalog
 //  private val quotedStringPattern = "\".+\n?.*\"".r
   private val quotedStringPattern = "\".+\\R*.*[^\t]\"".r
 
-
-  import scala.util.chaining._
 
   private val meds: Map[Year,Iterable[Medication]] =
     this.synchronized {
@@ -78,56 +78,7 @@ object MedicationCatalogImpl extends MedicationCatalog
         year -> entries
     }
     .toMap
-  }
-
-
-/*
-  private val meds: Map[Year,Iterable[Medication]] =
-    this.synchronized {
-      availableVersions.map {
-        year => 
-
-          val rawString =
-            Source.fromInputStream(
-              this.getClass
-                .getClassLoader
-                .getResourceAsStream(s"ATC_GKV_${year}.csv")
-            )
-            .mkString
-
-          val processed =
-            quotedString.replaceAllIn(
-              rawString,
-              m => {
-
-                m.matched
-                 .replace("\n","")
-                 .replace("\"","")
-                 .replaceAll("\\s{2,}"," ")// tap println
-
-              }
-            )
-
-          val entries =
-          Source.fromString(processed)
-            .getLines
-            .filter(atcCodePattern.findFirstIn(_).isDefined)
-            .map(_ split separator)
-            .map(
-              csv =>
-                Medication(
-                  Medication.Code(csv(0)),
-                  csv(1),
-                  year
-                )
-            ) 
-            .toList
-
-          (year -> entries)
-      }
-      .toMap
-  }
-*/
+    }
 
 
   override def entries(
