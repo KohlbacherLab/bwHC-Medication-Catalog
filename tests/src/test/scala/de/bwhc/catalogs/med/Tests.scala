@@ -7,10 +7,9 @@ import org.scalatest.AsyncFlatSpec
 import de.bwhc.catalogs.med._
 
 
-object Data
+object Setup
 {
-
-  lazy val drugs = MedicationCatalog.getInstance
+  val catalogTry = MedicationCatalog.getInstance
 }
 
 
@@ -18,16 +17,19 @@ class Tests extends AsyncFlatSpec
 {
 
   "MedicationCatalog" should "be successfully loaded" in {
-    assert(Data.drugs.isSuccess)
+
+    assert(Setup.catalogTry.isSuccess)
+
   }
+
+
+  lazy val catalog = Setup.catalogTry.get
 
 
   "MedicationCatalog" should "return matches for 'umab'" in {
 
-    assert(!Data.drugs.get.findMatching("umab").isEmpty)
+    assert(!catalog.findMatching("umab").isEmpty)
 
-//    Data.drugs.get.findMatching("umab")
-//      .map(ms => assert(!ms.isEmpty))
   }
 
 

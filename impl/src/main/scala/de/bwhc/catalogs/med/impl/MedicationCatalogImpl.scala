@@ -2,7 +2,10 @@ package de.bwhc.catalogs.med.impl
 
 
 
+import java.time.Year
+
 import scala.io.Source
+import scala.util.matching.Regex
 
 import de.bwhc.catalogs.med._
 
@@ -19,55 +22,130 @@ class MedicationCatalogProviderImpl extends MedicationCatalogProvider
 object MedicationCatalogImpl extends MedicationCatalog
 {
 
-  private val meds: Iterable[Medication] =
+  override def availableVersions: List[Year] =
+    List(2020,2021).map(Year.of)
+
+
+  private val separator = "\t"
+
+  private val atcCodePattern = "[A-Z]{1}[0-9]{2}[A-Z]{2}[0-9]{2}".r
+
+//  private val quotedStringPattern = "\".+\n?.*\"".r
+  private val quotedStringPattern = "\".+\\R*.*[^\t]\"".r
+
+
+  import scala.util.chaining._
+
+  private val meds: Map[Year,Iterable[Medication]] =
     this.synchronized {
-    Source.fromInputStream(
-      this.getClass
-        .getClassLoader
-        .getResourceAsStream("ATC_GKV_2020.csv")
-    )
-    .getLines
-    .drop(1)  // Skip CSV file header
-    .map(_.split(";"))
-    .map(cn => Medication(Medication.Code(cn(0)),Some(cn(1)))) 
-    .toList
+    availableVersions.map { year => 
+
+      val entries =
+        Source.fromInputStream(
+          this.getClass.getClassLoader
+            .getResourceAsStream(s"ATC_GKV_${year}.csv")
+        )
+        .mkString
+        .pipe ( s => 
+
+          quotedStringPattern
+            .replaceAllIn(
+              s,
+              m => {
+                m.matched
+                 .replace("\n","")
+                 .replace("\"","")
+                 .replaceAll("\\s{2,}"," ") tap println
+              }
+            )
+        )
+        .pipe ( s => 
+          Source.fromString(s)
+            .getLines
+            .filter(atcCodePattern.findFirstIn(_).isDefined)
+            .map(_ split separator)
+            .map(
+              csv =>
+                Medication(
+                  Medication.Code(csv(0)),
+                  csv(1),
+                  year
+                )
+            ) 
+            .toList
+        )
+
+        year -> entries
+    }
+    .toMap
   }
 
-  def entries = meds
-
-
-  def findByCode(
-    code: Medication.Code
-  ): Option[Medication] =
-    meds.find(_.code == code)
-
-
-  def findMatching(
-    pattern: String
-  ): Iterable[Medication] =
-    meds.filter(_.name.exists(_.contains(pattern)))
 
 /*
-  def entries(
-    implicit ec: ExecutionContext
-  ): Future[Iterable[Medication]] =
-    Future.successful(meds)
+  private val meds: Map[Year,Iterable[Medication]] =
+    this.synchronized {
+      availableVersions.map {
+        year => 
 
+          val rawString =
+            Source.fromInputStream(
+              this.getClass
+                .getClassLoader
+                .getResourceAsStream(s"ATC_GKV_${year}.csv")
+            )
+            .mkString
 
-  def findByCode(
-    code: Medication.Code
-  )(
-    implicit ec: ExecutionContext
-  ): Future[Option[Medication]] =
-    Future.successful(meds.find(_.code == code))
+          val processed =
+            quotedString.replaceAllIn(
+              rawString,
+              m => {
 
+                m.matched
+                 .replace("\n","")
+                 .replace("\"","")
+                 .replaceAll("\\s{2,}"," ")// tap println
 
-  def findMatching(
-    pattern: String
-  )(
-    implicit ec: ExecutionContext
-  ): Future[Iterable[Medication]] =
-    Future.successful(meds.filter(_.name.exists(_.contains(pattern))))
+              }
+            )
+
+          val entries =
+          Source.fromString(processed)
+            .getLines
+            .filter(atcCodePattern.findFirstIn(_).isDefined)
+            .map(_ split separator)
+            .map(
+              csv =>
+                Medication(
+                  Medication.Code(csv(0)),
+                  csv(1),
+                  year
+                )
+            ) 
+            .toList
+
+          (year -> entries)
+      }
+      .toMap
+  }
 */
+
+
+  override def entries(
+    version: Year
+  ): Iterable[Medication] = meds(version)
+
+
+  override def find(
+    code: Medication.Code,
+    version: Year
+  ): Option[Medication] =
+    meds(version).find(_.code == code)
+
+
+  override def findMatching(
+    pattern: String,
+    version: Year
+  ): Iterable[Medication] =
+    meds(version).filter(_.name.contains(pattern))
 
 }
