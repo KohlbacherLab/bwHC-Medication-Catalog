@@ -55,7 +55,7 @@ object MedicationCatalogImpl extends MedicationCatalog
                 m.matched
                  .replace("\n","")
                  .replace("\"","")
-                 .replaceAll("\\s{2,}"," ") tap println
+                 .replaceAll("\\s{2,}"," ")
               }
             )
         )
