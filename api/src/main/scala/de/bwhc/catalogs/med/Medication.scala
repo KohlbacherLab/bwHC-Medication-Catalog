@@ -11,7 +11,9 @@ final case class Medication
 (
   code: Medication.Code,
   name: String,
-  version: Year
+  version: Year,
+  parent: Option[Medication.Code],
+  children: Set[Medication.Code]
 )
 
 

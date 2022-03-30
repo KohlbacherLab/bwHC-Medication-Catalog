@@ -66,7 +66,7 @@ lazy val tests = project
   )
   .dependsOn(
     api,
-    impl % "test"
+    impl % Test
   )
 
 
