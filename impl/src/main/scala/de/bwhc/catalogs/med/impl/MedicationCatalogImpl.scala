@@ -24,7 +24,7 @@ object MedicationCatalogImpl extends MedicationCatalog
 {
 
   override def availableVersions: List[Year] =
-    List(2020,2021).map(Year.of)
+    List(2020,2021,2022).map(Year.of)
 
   private val separator = "\t"
 
