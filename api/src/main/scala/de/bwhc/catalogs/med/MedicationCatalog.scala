@@ -60,37 +60,3 @@ object MedicationCatalog
 
 }
 
-/*
-trait MedicationCatalog
-{
-  self =>
-
-  def availableVersions: List[Year]
-
-  def currentVersion: Year =
-    self.availableVersions.max
-
-
-  def entries( 
-    version: Year = self.currentVersion
-  ): Iterable[Medication]
-
-
-  def find(
-    code: Medication.Code,
-    version: Year = self.currentVersion
-  ): Option[Medication]
-  
-  def findWithCode(
-    code: String,
-    version: Year = self.currentVersion
-  ): Option[Medication] =
-    self.find(Medication.Code(code),version)
-  
-  def findMatching(
-    pattern: String,
-    version: Year = self.currentVersion
-  ): Iterable[Medication]
-
-}
-*/

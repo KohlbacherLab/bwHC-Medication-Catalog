@@ -2,8 +2,6 @@ package de.bwhc.catalogs.med
 
 
 
-import java.time.Year
-
 import play.api.libs.json.{Json,Format,Writes,Reads,JsString}
 
 
@@ -23,14 +21,6 @@ object Medication
   case class Code(value: String) extends AnyVal
 
   implicit val formatCode = Json.valueFormat[Code]
-
-/*
-  implicit val formatYear =
-    Format[Year](
-      Reads(js => js.validate[Int].map(Year.of)),
-      Writes(y => JsString(y.toString))
-    ) 
-*/
 
   implicit val format     = Json.format[Medication]
 
