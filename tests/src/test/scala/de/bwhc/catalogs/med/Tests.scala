@@ -36,17 +36,17 @@ class Tests extends AsyncFlatSpec
 
     assert(
       catalog.availableVersions
-        .forall { year =>
+        .forall { v =>
 
           val expected =
             Source.fromInputStream(
-              this.getClass.getClassLoader.getResourceAsStream(s"ATC_$year.csv")
+              this.getClass.getClassLoader.getResourceAsStream(s"ATC_$v.csv")
             )
-            .getLines
+            .getLines()
             .filter(line => group.findPrefixOf(line).isDefined)  
             .size 
           
-         catalog.entries(year).size == expected
+         catalog.entries(v).size == expected
       }
     )
 
@@ -55,7 +55,7 @@ class Tests extends AsyncFlatSpec
 
   it should "return matches for 'umab'" in {
 
-    assert(!catalog.findMatching("umab").isEmpty)
+    assert(!catalog.findMatching("umab",catalog.latestVersion).isEmpty)
 
   }
 
@@ -63,14 +63,14 @@ class Tests extends AsyncFlatSpec
   it should "contain children for 'Proteinkinase-Inhibitoren'" in {
 
     val proteinKinaseInhibitors =
-      catalog.entries()
+      catalog.entries(catalog.latestVersion)
         .find(_.name contains "Proteinkinase-Inhibitoren")
         .value
         .children
 
     assert(
       proteinKinaseInhibitors.nonEmpty &&
-      proteinKinaseInhibitors.forall(catalog.find(_).isDefined)
+      proteinKinaseInhibitors.forall(catalog.find(_,catalog.latestVersion).isDefined)
     )
 
   }

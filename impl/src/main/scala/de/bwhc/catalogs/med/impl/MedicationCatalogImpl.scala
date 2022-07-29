@@ -23,15 +23,23 @@ class MedicationCatalogProviderImpl extends MedicationCatalogProvider
 object MedicationCatalogImpl extends MedicationCatalog
 {
 
-  override def availableVersions: List[Year] =
+  private val years = 
     List(2020,2021,2022).map(Year.of)
+
+
+  override val availableVersions: List[String] =
+    years.map(_.toString)
+
+  override val latestVersion: String =
+    years.max.toString
+
 
   private val separator = "\t"
 
   private val group     = "([A-Z]{1}[0-9]{2}[A-Z]{2})".r.unanchored
   private val substance = "([A-Z]{1}[0-9]{2}[A-Z]{2}[0-9]{2})".r.unanchored
 
-  private val meds: Map[Year,Iterable[Medication]] =
+  private val meds: Map[String,Iterable[Medication]] =
     TrieMap.from(    
       availableVersions.map( year =>
         parse(
@@ -44,7 +52,7 @@ object MedicationCatalogImpl extends MedicationCatalog
       )
     )
 
-  private def parse(version: Year, src: Source): (Year,Seq[Medication]) = {
+  private def parse(version: String, src: Source): (String,Seq[Medication]) = {
 
     val (meds,lastGroup,lastSubstances) = 
       src.getLines()
@@ -109,7 +117,7 @@ object MedicationCatalogImpl extends MedicationCatalog
 
 
   override def entries(
-    version: Year
+    version: String
   ): Iterable[Medication] =
     meds.get(version)
       .getOrElse(Seq.empty)
@@ -117,7 +125,7 @@ object MedicationCatalogImpl extends MedicationCatalog
 
   override def find(
     code: Medication.Code,
-    version: Year
+    version: String
   ): Option[Medication] =
     meds.get(version)
       .flatMap(_.find(_.code == code))
@@ -125,7 +133,7 @@ object MedicationCatalogImpl extends MedicationCatalog
 
   override def findMatching(
     pattern: String,
-    version: Year
+    version: String
   ): Iterable[Medication] =
     meds.get(version)
       .map(_.filter(_.name.contains(pattern)))

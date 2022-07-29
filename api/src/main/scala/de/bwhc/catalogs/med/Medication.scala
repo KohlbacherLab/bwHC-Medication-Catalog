@@ -11,7 +11,7 @@ final case class Medication
 (
   code: Medication.Code,
   name: String,
-  version: Year,
+  version: String,
   parent: Option[Medication.Code],
   children: Set[Medication.Code]
 )
@@ -24,12 +24,13 @@ object Medication
 
   implicit val formatCode = Json.valueFormat[Code]
 
-
+/*
   implicit val formatYear =
     Format[Year](
       Reads(js => js.validate[Int].map(Year.of)),
       Writes(y => JsString(y.toString))
     ) 
+*/
 
   implicit val format     = Json.format[Medication]
 

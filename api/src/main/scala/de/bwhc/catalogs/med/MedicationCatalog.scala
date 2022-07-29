@@ -2,8 +2,6 @@ package de.bwhc.catalogs.med
 
 
 
-import java.time.Year
-
 import java.util.ServiceLoader
 
 import scala.util.Try
@@ -15,6 +13,54 @@ trait MedicationCatalogProvider
 }
 
 
+trait MedicationCatalog
+{
+
+  self =>
+
+  def availableVersions: List[String]
+
+  def latestVersion: String
+
+
+  def entries( 
+    version: String 
+  ): Iterable[Medication]
+
+
+  def find(
+    code: Medication.Code,
+    version: String
+  ): Option[Medication]
+  
+  def findWithCode(
+    code: String,
+    version: String
+  ): Option[Medication] =
+    self.find(Medication.Code(code),version)
+  
+  def findMatching(
+    pattern: String,
+    version: String
+  ): Iterable[Medication]
+
+}
+
+
+object MedicationCatalog
+{
+
+  def getInstance: Try[MedicationCatalog] =
+    Try {
+      ServiceLoader.load(classOf[MedicationCatalogProvider])
+        .iterator
+        .next
+        .getInstance
+    }
+
+}
+
+/*
 trait MedicationCatalog
 {
   self =>
@@ -47,17 +93,4 @@ trait MedicationCatalog
   ): Iterable[Medication]
 
 }
-
-
-object MedicationCatalog
-{
-
-  def getInstance: Try[MedicationCatalog] =
-    Try {
-      ServiceLoader.load(classOf[MedicationCatalogProvider])
-        .iterator
-        .next
-        .getInstance
-    }
-
-}
+*/
