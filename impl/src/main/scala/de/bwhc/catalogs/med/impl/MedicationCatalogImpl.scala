@@ -24,7 +24,7 @@ object MedicationCatalogImpl extends MedicationCatalog
 {
 
   private val years = 
-    List(2020,2021,2022).map(Year.of)
+    List(2020,2021,2022,2023).map(Year.of)
 
 
   override val availableVersions: List[String] =
@@ -82,6 +82,7 @@ object MedicationCatalogImpl extends MedicationCatalog
                      Medication.Code(code),
                      name,
                      version,
+                     Medication.Kind.Substance,
                      currentGroup.map(_.code),
                      Set.empty
                    )
@@ -98,6 +99,7 @@ object MedicationCatalogImpl extends MedicationCatalog
                       Medication.Code(code),
                       name,
                       version,
+                      Medication.Kind.Group,
                       None,
                       Set.empty
                     )

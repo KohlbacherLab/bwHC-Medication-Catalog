@@ -5,8 +5,8 @@
 
 
 name := "bwhc-medication-catalog"
-organization in ThisBuild := "de.bwhc"
-version in ThisBuild:= "1.0-SNAPSHOT"
+ThisBuild / organization := "de.bwhc"
+ThisBuild / version      := "1.0-SNAPSHOT"
 
 lazy val scala213 = "2.13.8"
 lazy val supportedScalaVersions =
@@ -14,7 +14,7 @@ lazy val supportedScalaVersions =
     scala213
   )
 
-scalaVersion in ThisBuild := scala213
+ThisBuild / scalaVersion := scala213
 
 
 //-----------------------------------------------------------------------------
@@ -97,10 +97,9 @@ lazy val compilerOptions = Seq(
 
 lazy val commonSettings = Seq(
   scalacOptions ++= compilerOptions,
-  resolvers ++= Seq(
-    "Local Maven Repository" at "file://" + Path.userHome.absolutePath + "/.m2/repository",
-    Resolver.sonatypeRepo("releases"),
-    Resolver.sonatypeRepo("snapshots")
-  )
+  resolvers ++=
+    Seq("Local Maven Repository" at "file://" + Path.userHome.absolutePath + "/.m2/repository") ++
+    Resolver.sonatypeOssRepos("releases") ++
+    Resolver.sonatypeOssRepos("snapshots")
 )
 
