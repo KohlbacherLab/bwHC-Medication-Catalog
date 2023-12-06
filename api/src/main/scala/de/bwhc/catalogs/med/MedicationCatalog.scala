@@ -41,7 +41,7 @@ trait MedicationCatalog
   
   def findMatching(
     pattern: String,
-    version: String
+    version: Option[String] = None
   ): Iterable[Medication]
 
 }

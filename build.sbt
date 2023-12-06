@@ -6,7 +6,7 @@
 
 name := "bwhc-medication-catalog"
 ThisBuild / organization := "de.bwhc"
-ThisBuild / version      := "1.0"
+ThisBuild / version      := "1.1-SNAPSHOT"
 
 lazy val scala213 = "2.13.8"
 lazy val supportedScalaVersions =

@@ -55,7 +55,13 @@ class Tests extends AsyncFlatSpec
 
   it should "return matches for 'umab'" in {
 
-    assert(!catalog.findMatching("umab",catalog.latestVersion).isEmpty)
+    assert(
+      catalog
+        .findMatching(
+          "umab",
+          Some(catalog.latestVersion)
+        )
+        .nonEmpty)
 
   }
 
@@ -74,7 +80,6 @@ class Tests extends AsyncFlatSpec
     )
 
   }
-
 
 
 }

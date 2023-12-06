@@ -135,11 +135,22 @@ object MedicationCatalogImpl extends MedicationCatalog
 
   override def findMatching(
     pattern: String,
-    version: String
+    version: Option[String]
   ): Iterable[Medication] =
-    meds.get(version)
-      .map(_.filter(_.name.contains(pattern)))
-      .getOrElse(Seq.empty)
-
-
+    (
+      version match {
+      
+        case Some(v) => entries(v)
+      
+        case None =>
+          for {
+            v <- availableVersions
+            cs <- entries(v)
+          } yield cs
+      
+      }
+    )
+    .filter(_.name.toLowerCase contains pattern.toLowerCase)
+ 
+ 
 }
